@@ -1,0 +1,35 @@
+.megaCommandBar {
+	position: fixed;
+	bottom: 2rem;
+	left: 50%;
+	transform: translateX(-50%);
+	background: #222;
+	padding: 1rem 2rem;
+	border-radius: 50px;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+	border: 1px solid #1793d1;
+	z-index: 100;
+	width: max-content;
+}
+
+.commandText {
+	color: #1793d1;
+	font-weight: bold;
+}
+
+.megaCopyBtn {
+	background: #1793d1;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 20px;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.megaCopyBtn:hover {
+	background: #1ca2e4;
+}
