@@ -1,8 +1,10 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faCopy, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faGlobe } from '@fortawesome/free-solid-svg-icons';
 import styles from './style.module.css';
 import { TRAIT_LIB } from '../../data/traits';
+import { faGithub } from '@fortawesome/free-brands-svg-icons/faGithub';
+
 
 interface Option {
     id: string;
@@ -22,12 +24,9 @@ interface Option {
 }
 
 interface Props {
-    title: string;
     options: Option[];
     selectedId: string;
     onSelect: (id: string) => void;
-    isForced: boolean;
-    WM: any;
 }
 
 export function TraitIcon({ traitKey }) {
@@ -46,11 +45,10 @@ export function TraitIcon({ traitKey }) {
     );
 }
 
-export default function ArchBlock({ title, options, selectedId, onSelect, isForced, WM }: Props) {
+export default function WMBlock({ options, selectedId, onSelect }: Props) {
     const selectedData = options.find(o => o.id === selectedId);
 
     const isActive = !!selectedId;
-
     const blockStyle = isActive ? {
         backgroundColor: `hsl(${selectedData.hue ?? 210}, 70%, 50%, 10%)`, // Default Gray
         color: '#fff',
@@ -63,23 +61,17 @@ export default function ArchBlock({ title, options, selectedId, onSelect, isForc
     return (
         <div className={styles.block} style={blockStyle}>
             <div className={styles.header}>
-                <h2>{selectedData?.title ?? title}</h2>
-                {isForced ?
-                    <div className={styles.lockBadge}>
-                        <FontAwesomeIcon icon={faCheckCircle} />
-                        <span>Provided by {WM.name}</span>
-                    </div> :
-                    <select
-                        value={selectedId}
-                        onChange={(e) => onSelect(e.target.value)}
-                        className={styles.select}
-                    >
-                        <option value="">None</option>
-                        {options.map(opt => (
-                            <option key={opt.id} value={opt.id}>{opt.name}</option>
-                        ))}
-                    </select>
-                }
+                <h2>{selectedData?.title ?? "Window Manager"}</h2>
+                <select
+                    value={selectedId}
+                    onChange={(e) => onSelect(e.target.value)}
+                    className={styles.select}
+                >
+                    <option value="">None</option>
+                    {options.map(opt => (
+                        <option key={opt.id} value={opt.id}>{opt.name}</option>
+                    ))}
+                </select>
             </div>
             <div className={styles.mainBody}>
                 <div>
@@ -94,8 +86,18 @@ export default function ArchBlock({ title, options, selectedId, onSelect, isForc
                         </h3>
                     )}
                     {isActive && selectedData?.docs && (
-                        <a href={selectedData.docs} className={styles.docsLink} title="Quick Docs">
+                        <a href={selectedData.docs} className={styles.link} title="Quick Docs">
                             <FontAwesomeIcon icon={faBook} />
+                        </a>
+                    )}
+                    {isActive && selectedData?.github && (
+                        <a href={selectedData.github} className={styles.link} title="Github">
+                            <FontAwesomeIcon icon={faGithub} />
+                        </a>
+                    )}
+                    {isActive && selectedData?.site && (
+                        <a href={selectedData.site} className={styles.link} title="Github">
+                            <FontAwesomeIcon icon={faGlobe} />
                         </a>
                     )}
                 </div>

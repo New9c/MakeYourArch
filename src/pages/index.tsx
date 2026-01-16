@@ -1,41 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ArchBlock from '@site/src/components/ArchBlock';
+import WMBlock from '@site/src/components/WMBlock';
 import styles from './index.module.css';
 import Layout from '@theme/Layout';
+import { WM_DATA, DM_DATA, TERM_DATA } from '../data/database';
 
-const WM_DATA = [
-    {
-        id: 'gnome',
-        name: 'GNOME',
-        pkg: 'gnome',
-        docs: '/docs/gnome',
-        // When GNOME is picked, auto-set these:
-        defaults: {
-            dm: 'gdm',
-            terminal: 'gnome-terminal'
-        }
-    },
-    {
-        id: 'hyprland',
-        name: 'Hyprland',
-        pkg: 'hyprland',
-        docs: '/docs/hyprland',
-        defaults: {
-            dm: 'sddm', // Often recommended for Wayland
-            terminal: 'kitty'
-        }
-    }
-];
-
-const DM_DATA = [
-    { id: 'sddm', name: 'SDDM', pkg: 'sddm', docs: '/docs/sddm-guide' },
-    { id: 'gdm', name: 'GDM', pkg: 'gdm', docs: '/docs/gnome-setup' }
-];
-
-const TERM_DATA = [
-    { id: 'alacritty', name: 'Alacritty', pkg: 'alacritty', docs: '/docs/terminal/Alacritty' },
-    { id: 'kitty', name: 'Kitty', pkg: 'kitty', docs: '/docs/terminal/Kitty' }
-];
 
 export default function MakeYourArch() {
     const [dm, setDm] = useState('');
@@ -54,26 +23,34 @@ export default function MakeYourArch() {
 
     const fullCommand = `sudo pacman -S ${selectedPkgs.join(' ')}`;
     // The "Auto-Setter" Logic
+    const selectedWm = WM_DATA.find(item => item.id === wm);
+
     useEffect(() => {
         // 1. Find the data for the currently selected WM
         const selectedWm = WM_DATA.find(item => item.id === wm);
 
         // 2. If it has defaults, apply them!
-        if (selectedWm && selectedWm.defaults) {
-            if (selectedWm.defaults.dm) setDm(selectedWm.defaults.dm);
-            if (selectedWm.defaults.terminal) setTerminal(selectedWm.defaults.terminal);
+        setDm('')
+        setTerminal('')
+        if (selectedWm && selectedWm.forces) {
+            if (selectedWm.forces.dm) setDm(selectedWm.forces.dm);
+            if (selectedWm.forces.terminal) setTerminal(selectedWm.forces.terminal);
         }
     }, [wm]); // [wm] means "Only run this code when 'wm' changes"
 
     return (
         <Layout title='MakeYourArch' description='Make Your Own Flavored Arch'>
             <div className="container">
-                <h1> Make Your Arch</h1>
-                <h3> If you want something less custom, you can check alternatives</h3>
-                <div className="grid">
-                    <ArchBlock title="Window Manager" options={WM_DATA} selectedId={wm} onSelect={setWm} />
-                    <ArchBlock title="Display Manager" options={DM_DATA} selectedId={dm} onSelect={setDm} />
-                    <ArchBlock title="Terminal" options={TERM_DATA} selectedId={terminal} onSelect={setTerminal} />
+                <div className={styles.head}>
+                    <h1> Make Your Arch</h1>
+                    <h3> If you want something less custom, you can check alternatives</h3>
+                </div>
+                <div className={styles.grid}>
+                    <WMBlock options={WM_DATA} selectedId={wm} onSelect={setWm} />
+                    <ArchBlock title="Display Manager" options={DM_DATA} selectedId={dm}
+                        onSelect={setDm} isForced={selectedWm?.forces && 'dm' in selectedWm.forces} WM={selectedWm} />
+                    <ArchBlock title="Terminal" options={TERM_DATA} selectedId={terminal}
+                        onSelect={setTerminal} isForced={selectedWm?.forces && 'terminal' in selectedWm.forces} WM={selectedWm} />
                 </div>
 
                 {/* 3. The Mega Command Bar */}

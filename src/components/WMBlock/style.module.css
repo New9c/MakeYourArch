@@ -1,3 +1,12 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 5px 0px 5px 0px;
+}
+
 .traitContainer {
 	display: flex;
 	flex-direction: row;
@@ -71,12 +80,12 @@
 }
 
 .block.active h3,
-.block.active .docsLink {
+.block.active .link {
 	color: white;
 }
 
-.docsLink {
-	font-size: 1.2rem;
+.link {
+	font-size: 1.5rem;
 	color: #fff;
 }
 
